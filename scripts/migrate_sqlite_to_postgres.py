@@ -29,7 +29,7 @@ def postgres_ddl(sql: str) -> str:
     ddl = re.sub(r"\bBLOB\b", "BYTEA", ddl, flags=re.I)
     timestamp_columns = (
         "applied_at|atualizado_em|avaliado_em|concluido_em|criado_em|"
-        "expira_em|registrado_em|ultimo_login"
+        "expira_em|registrado_em|ultimo_login|updated_at"
     )
     ddl = re.sub(
         rf"\b({timestamp_columns})\s+TEXT\b",
