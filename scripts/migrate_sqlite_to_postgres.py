@@ -73,14 +73,16 @@ def insert_rows(source: sqlite3.Connection, target, table: str) -> int:
     if not columns:
         return 0
     quoted = ", ".join(f'"{column}"' for column in columns)
-    placeholders = ", ".join("%s" for _ in columns)
-    command = f'INSERT INTO "{table}" ({quoted}) VALUES ({placeholders})'
     rows = source.execute(f'SELECT {quoted} FROM "{table}"')
     count = 0
     with target.cursor() as cursor:
-        for row in rows:
-            cursor.execute(command, tuple(row))
-            count += 1
+        # COPY envia cada tabela em um fluxo único. Em um banco hospedado isso
+        # evita uma viagem de rede por linha e torna a migração confiável para
+        # tabelas grandes, como os registros do apontamento de campo.
+        with cursor.copy(f'COPY "{table}" ({quoted}) FROM STDIN') as copy:
+            for row in rows:
+                copy.write_row(tuple(row))
+                count += 1
     return count
 
 
