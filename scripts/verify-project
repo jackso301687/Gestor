@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+project_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$project_dir"
+
+python3 -m unittest -v test_system.py test_http.py
+node --check app-system.js
+node --check auth.js
+node --check campo/app.js
+node --check campo/sw.js
+node --check local-launch.js
+node test_field.mjs
+
+echo "Verificação concluída com sucesso."

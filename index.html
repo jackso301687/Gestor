@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="O gestor de Campo — controle operacional de produção, pagamentos e medições de obras." />
+  <title>O Gestor de Campo · Gestão de obra</title>
+  <link rel="icon" href="/campo/icons/icon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="system.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><img class="brand-mark" src="/campo/icons/icon.svg" width="30" height="30" alt=""><span class="brand-name">O Gestor de Campo</span></div>
+      <div class="workspace-label">ESPAÇO DE TRABALHO</div>
+      <button class="project-picker" id="projectPicker"><span class="project-dot"></span><span><strong id="projectName">Carregando…</strong><small id="projectMeta">obra autorizada</small></span><span class="chevron">⌄</span></button>
+      <nav class="nav" aria-label="Navegação principal">
+        <button class="nav-item active" data-view="overview"><span>◈</span> Visão geral</button>
+        <div class="nav-divider"></div>
+        <div class="workspace-label">PRODUÇÃO E QUALIDADE</div>
+        <button class="nav-item" data-view="entries"><span>＋</span> Lançamentos <b class="nav-count" id="entryCount">—</b></button>
+        <button class="nav-item" data-view="appropriations"><span>◷</span> Apropriações</button>
+        <button class="nav-item" data-view="quality"><span>✓</span> Qualidade</button>
+        <div class="nav-divider"></div>
+        <div class="workspace-label">MEDIÇÕES E FECHAMENTOS</div>
+        <button class="nav-item" data-view="payments"><span>↗</span> Fechamento</button>
+        <button class="nav-item" data-view="proposals"><span>▤</span> Proposta de Medição</button>
+        <div class="nav-divider"></div>
+        <div class="workspace-label">CONSULTAS</div>
+        <button class="nav-item" data-view="summary"><span>▦</span> Resumo</button>
+        <button class="nav-item" data-view="reimbursements"><span>↺</span> Reembolsos</button>
+        <button class="nav-item" data-view="reports"><span>▥</span> Relatórios</button>
+        <div class="nav-divider"></div>
+        <div class="workspace-label">CADASTROS</div>
+        <button class="nav-item" data-view="people"><span>♙</span> Funcionários</button>
+        <button class="nav-item" data-view="services"><span>⊞</span> Serviços e preços</button>
+        <div class="nav-divider"></div>
+        <button class="nav-item" data-view="settings"><span>⚙</span> Configurações</button>
+      </nav>
+      <div class="sidebar-bottom"><div class="sync-dot"></div><div><strong>Banco local ativo</strong><small>SQLite · persistência real</small></div><button class="icon-button" data-view="settings" aria-label="Abrir configurações" title="Configurações">⚙</button></div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar"><button class="mobile-menu" id="mobileMenu" aria-label="Abrir menu">☰</button><div class="breadcrumb"><span>Obras</span><b>/</b><strong id="currentWork">Carregando…</strong></div><div class="top-actions"><button class="period-control" id="periodButton" title="Escolher período dos dados" aria-label="Escolher período dos dados">◷ <span id="periodLabel">Carregando período…</span></button><div class="user-menu"><div class="avatar" id="userAvatar">—</div><div class="user-copy"><strong id="userName">Carregando…</strong><small id="userRole">—</small></div><button class="icon-button" id="changePasswordButton" aria-label="Alterar minha senha" title="Alterar senha">⚿</button><button class="icon-button" id="logoutButton" aria-label="Sair do sistema" title="Sair">↪</button></div></div></header>
+      <div id="app"></div>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog id="modal" class="system-dialog"></dialog>
+  <script src="local-launch.js"></script>
+  <script src="app-system.js"></script>
+</body>
+</html>

@@ -1,0 +1,429 @@
+  IMPLEMENTAÇÃO OBRIGATÓRIA — FILTROS RÁPIDOS E ORDENAÇÃO EM TODAS AS TABELAS
+
+Implementar no sistema um padrão global de filtros rápidos, pesquisa e ordenação de dados, semelhante à experiência de filtros de tabelas do Microsoft Excel.
+
+Essa funcionalidade deve ser aplicada de maneira padronizada em todas as abas/telas que possuam tabelas, listagens ou registros, incluindo, mas não se limitando a:
+
+Medição / Lançamentos
+Apropriação
+Qualidade
+Pagamentos
+Equipe / Colaboradores
+Serviços e Preços
+Usuários
+Auditoria
+Relatórios
+Demais tabelas existentes ou que forem criadas futuramente
+1. FILTROS DIRETAMENTE NO CABEÇALHO DAS COLUNAS
+
+Cada coluna da tabela deverá possuir um mecanismo de filtro e ordenação no próprio cabeçalho, semelhante ao Excel.
+
+Exemplo:
+
+Data ↕ ▼	Colaborador ↕ ▼	Serviço ↕ ▼	Quantidade ↕ ▼	Valor ↕ ▼	Situação ↕ ▼
+
+Ao clicar no cabeçalho ou no ícone de filtro da coluna, o usuário deverá visualizar as opções compatíveis com aquele tipo de informação.
+
+2. ORDENAÇÃO RÁPIDA
+Campos de texto
+
+Permitir:
+
+A → Z
+Z → A
+
+Exemplo:
+
+Colaborador
+
+A → Z:
+
+Alex
+João
+José
+Marcos
+
+Z → A:
+
+Marcos
+José
+João
+Alex
+
+O mesmo comportamento deve funcionar para Serviço, Profissão, Local, Situação e demais campos textuais.
+
+Campos numéricos
+
+Permitir:
+
+Menor → Maior
+Maior → Menor
+
+Aplicar a:
+
+Quantidade
+Valor
+Preço
+Total
+Número da casa
+Número do bloco
+PMS
+Outros campos numéricos
+Campos de data
+
+Permitir:
+
+Mais recente → Mais antiga
+Mais antiga → Mais recente
+
+Também permitir filtragem rápida por:
+
+Hoje
+Ontem
+Esta semana
+Este mês
+Período personalizado
+
+No período personalizado:
+
+Data inicial: [//]
+Data final: [//]
+
+3. FILTRO POR VALORES DA COLUNA
+
+Além da ordenação, o usuário deverá poder escolher quais valores deseja visualizar.
+
+Exemplo para a coluna Colaborador:
+
+☑ Todos
+☑ Alex
+☑ João
+☑ José
+☑ Marcos
+☐ Pedro
+
+Se Pedro for desmarcado, os registros de Pedro deixam temporariamente de aparecer na tabela.
+
+Esse comportamento deve ser semelhante ao filtro rápido existente no Excel.
+
+4. PESQUISA DENTRO DO FILTRO
+
+Quando uma coluna possuir muitos valores, disponibilizar um campo de pesquisa.
+
+Exemplo:
+
+Filtrar colaborador
+
+🔎 Pesquisar...
+
+☑ Alex
+☑ João
+☑ José
+☑ Marcos
+
+Ao digitar:
+
+jos
+
+o sistema poderá apresentar imediatamente:
+
+☑ José
+☑ Josemar
+☑ José Reinaldo
+
+A pesquisa deve funcionar enquanto o usuário digita.
+
+5. FILTROS COMBINADOS
+
+Os filtros precisam funcionar simultaneamente.
+
+Exemplo:
+
+O usuário poderá selecionar:
+
+Data: 16/09/2026 até 30/09/2026
+Colaborador: José Reinaldo
+Serviço: Ligação de esgoto
+Situação: Finalizado
+
+A tabela deverá apresentar somente registros que atendam simultaneamente aos critérios selecionados.
+
+Não limitar o usuário a apenas um filtro por vez.
+
+6. INDICAÇÃO VISUAL DE FILTRO ATIVO
+
+Quando uma coluna possuir um filtro ativo, o sistema deverá deixar isso visualmente evidente.
+
+Exemplo:
+
+Colaborador 🔽●
+
+O usuário precisa conseguir identificar rapidamente quais colunas estão filtrando a tabela.
+
+Também disponibilizar:
+
+Limpar filtro desta coluna
+
+e uma ação global:
+
+Limpar todos os filtros
+
+7. FILTROS ESPECÍFICOS POR TIPO DE CAMPO
+
+O sistema deverá identificar automaticamente o tipo de informação da coluna.
+
+Texto
+A → Z
+Z → A
+Contém
+Não contém
+Começa com
+Termina com
+É igual a
+Número
+Menor → Maior
+Maior → Menor
+Igual a
+Maior que
+Menor que
+Entre
+Data
+Mais recente → Mais antiga
+Mais antiga → Mais recente
+Hoje
+Ontem
+Esta semana
+Este mês
+Entre duas datas
+Status/Situação
+
+Utilizar seleção múltipla.
+
+Exemplo na Qualidade:
+
+☑ Em andamento
+☑ Pendente
+☑ Finalizado
+
+8. APLICAÇÃO NA ABA MEDIÇÃO / LANÇAMENTOS
+
+A tabela deverá permitir, no mínimo, filtrar e ordenar por:
+
+Data
+Colaborador
+Tipo
+Serviço
+Quantidade
+Unidade
+Bloco
+Apartamento
+Casa
+Valor
+PMS
+Situação
+Horário
+
+Exemplo:
+
+Data ↕ | Colaborador ↕ | Serviço ↕ | Qtd ↕ | Local ↕ | Valor ↕ | PMS ↕
+
+9. APLICAÇÃO NA ABA APROPRIAÇÃO
+
+Permitir filtros rápidos por todos os campos disponíveis, especialmente:
+
+Data
+Colaborador
+Serviço
+Local
+Quantidade
+PMS
+Situação
+10. APLICAÇÃO NA ABA QUALIDADE
+
+Permitir filtros rápidos por:
+
+Data
+Colaborador
+Serviço
+Bloco
+Apartamento/Casa
+PMS
+Status
+Problema/Pendência
+Responsável
+
+Especialmente para Status:
+
+☑ Em andamento
+☑ Pendente
+☑ Finalizado
+
+11. APLICAÇÃO NA ABA PAGAMENTOS
+
+Permitir ordenar e filtrar por:
+
+Colaborador
+PMS
+Período
+Quantidade de serviços
+Produção
+Apropriação
+Valor bruto
+Descontos/Ajustes
+Valor final
+Situação do pagamento
+
+Os valores monetários devem possuir ordenação numérica real.
+
+Exemplo:
+
+R$ 500
+R$ 1.200
+R$ 5.000
+R$ 12.000
+
+Nunca ordenar valores monetários como texto.
+
+12. FILTROS GLOBAIS + FILTROS DA TABELA
+
+Os filtros rápidos das colunas devem funcionar em conjunto com os filtros globais já existentes no sistema.
+
+Exemplo de filtros globais:
+
+PMS: 35
+Período: 16/09/2026 – 30/09/2026
+Colaborador: Todos
+
+Depois disso, o usuário poderá aplicar filtros adicionais diretamente na tabela.
+
+Exemplo:
+
+Serviço: Chumbamento do isômetro
+
+Resultado:
+
+O sistema deverá apresentar somente os registros da PMS 35, dentro do período selecionado, relacionados ao serviço escolhido.
+
+13. PESQUISA RÁPIDA GERAL
+
+Nas telas com grande quantidade de registros, adicionar também uma caixa:
+
+🔎 Pesquisar nesta tabela...
+
+Ela deverá pesquisar simultaneamente nos principais campos visíveis.
+
+Exemplo:
+
+Ao pesquisar:
+
+Alex
+
+o sistema poderá localizar registros em que Alex apareça como colaborador, responsável ou em outro campo textual relevante.
+
+14. CONTADOR DE RESULTADOS
+
+Após aplicação dos filtros, apresentar:
+
+Exibindo 27 de 384 registros
+
+Isso permitirá ao usuário saber imediatamente quantos registros permaneceram depois da filtragem.
+
+15. PAGINAÇÃO
+
+As tabelas com muitos registros deverão possuir paginação.
+
+Exemplo:
+
+Mostrar:
+
+[25 ▼] registros por página
+
+Opções:
+
+25
+50
+100
+200
+
+Navegação:
+
+‹ Anterior | 1 | 2 | 3 | 4 | Próxima ›
+
+Os filtros e ordenações deverão continuar ativos durante a troca de página.
+
+16. DESEMPENHO
+
+A implementação não poderá deixar o sistema lento.
+
+Para tabelas grandes:
+
+realizar paginação adequada;
+evitar carregar milhares de registros desnecessariamente;
+realizar filtros no backend quando necessário;
+utilizar índices no banco de dados para campos frequentemente pesquisados;
+evitar consultas repetitivas;
+carregar somente os dados necessários para a página atual.
+
+Campos como data, colaborador_id, servico_id, pms_id, status e demais campos utilizados frequentemente em filtros deverão ser analisados para criação dos índices apropriados.
+
+17. RESPONSIVIDADE
+
+Os filtros deverão funcionar corretamente em:
+
+Desktop
+Notebook
+Tablet
+Smartphone
+
+No computador, utilizar menus suspensos semelhantes aos filtros do Excel.
+
+No celular, quando necessário, o filtro poderá abrir como painel/modal otimizado para toque.
+
+A tabela não poderá ficar inutilizável em telas pequenas.
+
+18. PADRÃO GLOBAL OBRIGATÓRIO
+
+Não implementar essa funcionalidade somente em Medição/Lançamentos.
+
+Criar um componente reutilizável e padronizado de tabela, para que todas as telas utilizem o mesmo sistema de:
+
+Ordenação + Filtros + Pesquisa + Paginação + Contador de resultados
+
+Sempre que uma nova tabela for criada futuramente, ela deverá herdar esse padrão automaticamente ou permitir sua ativação com configuração mínima.
+
+19. PRESERVAR AS FUNCIONALIDADES EXISTENTES
+
+A implementação dos filtros não poderá:
+
+excluir registros existentes;
+alterar valores;
+quebrar os filtros globais;
+remover funcionalidades;
+prejudicar edição e exclusão;
+quebrar cálculos;
+alterar regras de PMS;
+prejudicar Medição, Apropriação, Qualidade ou Pagamentos.
+
+Os filtros devem alterar somente a visualização/consulta dos registros, nunca os dados armazenados.
+
+20. CRITÉRIO DE CONCLUSÃO
+
+A tarefa somente deverá ser considerada concluída quando todas as tabelas relevantes do sistema tiverem sido verificadas individualmente.
+
+A IA/desenvolvedor deverá:
+
+Mapear todas as telas que possuem tabelas.
+Identificar as colunas de cada tabela.
+Identificar o tipo de dado de cada coluna.
+Aplicar ordenação adequada ao tipo.
+Aplicar filtros adequados ao tipo.
+Implementar pesquisa quando aplicável.
+Garantir combinação de múltiplos filtros.
+Garantir integração com os filtros globais.
+Garantir paginação.
+Testar limpeza individual e global dos filtros.
+Testar em desktop e dispositivos móveis.
+Confirmar que nenhum dado foi alterado pelos filtros.
+Confirmar que edição, exclusão e demais ações continuam funcionando.
+
+Não considerar a tarefa concluída apenas porque os filtros foram implementados em uma única página. A funcionalidade deve fazer parte do padrão global de tabelas do sistema.

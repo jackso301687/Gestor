@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Acesso ao sistema O Gestor de Campo.">
+  <title>Entrar · O Gestor de Campo</title>
+  <link rel="icon" href="/campo/icons/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+  <main class="auth-layout">
+    <div class="auth-shell">
+      <header class="auth-identity">
+        <img src="/campo/icons/icon.svg" width="56" height="56" alt="">
+        <h1>O Gestor de Campo</h1>
+      </header>
+      <form class="auth-form" id="loginForm" aria-label="Entrar no sistema" novalidate>
+        <div class="auth-alert" id="loginError" role="alert" hidden></div>
+        <div class="auth-field">
+          <label for="username">Usuário</label>
+          <input id="username" name="username" autocomplete="username" required aria-required="true">
+        </div>
+        <div class="auth-field">
+          <label for="password">Senha</label>
+          <div class="password-field"><input id="password" name="password" type="password" autocomplete="current-password" required aria-required="true"><button type="button" id="togglePassword" aria-label="Mostrar senha">Mostrar</button></div>
+        </div>
+        <button class="auth-submit" type="submit">Entrar</button>
+      </form>
+    </div>
+  </main>
+  <script src="local-launch.js"></script>
+  <script src="auth.js"></script>
+</body>
+</html>

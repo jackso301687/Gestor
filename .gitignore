@@ -1,0 +1,18 @@
+# Banco operacional e cópias de segurança locais
+*.sqlite3
+*.sqlite3-*
+backups/
+data/backups/
+
+# Cache e arquivos temporários do Python
+__pycache__/
+*.py[cod]
+
+# Configurações locais e arquivos de sistema
+.env
+.env.*
+.DS_Store
+
+# Artefatos locais de auditoria de interface e instruções instaladas no ambiente
+.hallmark/
+construction-erp-manager/

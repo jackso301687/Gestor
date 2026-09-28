@@ -1,0 +1,14 @@
+{
+  "name": "Apontamento de Campo",
+  "short_name": "Apontamento",
+  "description": "Aplicativo independente para registrar apontamentos offline e sincronizar com o Gestor de Campo.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f7f2",
+  "theme_color": "#167a62",
+  "orientation": "portrait-primary",
+  "icons": [
+    {"src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+  ]
+}
