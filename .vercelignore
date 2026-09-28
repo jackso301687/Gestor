@@ -1,0 +1,11 @@
+.git/
+backups/
+data/
+*.sqlite3
+*.sqlite3-*
+__pycache__/
+**/__pycache__/
+test_*.py
+test_*.mjs
+.hallmark/
+construction-erp-manager/

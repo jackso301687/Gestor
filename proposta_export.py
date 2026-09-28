@@ -358,7 +358,24 @@ def pdf_bytes(proposal):
           @page{size:A4 portrait;margin:0}*{box-sizing:border-box}body{margin:0;font-family:Calibri,Arial,sans-serif;color:#000}.page{height:297mm;padding:6mm;page-break-after:always;position:relative}.page:last-child{page-break-after:auto}header{height:17mm;display:flex;align-items:center;justify-content:center;position:relative}header img{position:absolute;left:0;top:1mm;width:46mm;max-height:10mm;object-fit:contain}h1{font-size:15pt;margin:0}.metadata{height:7mm;border:1pt solid #000;display:grid;grid-template-columns:38% 42% 20%;align-items:center;font-size:9pt}.metadata b{padding:.7mm;border-right:.5pt solid #000;height:100%}.metadata b:last-child{border-right:0;text-align:center}table{border-collapse:collapse;width:100%;table-layout:fixed}th,td{border:.45pt solid #000}th{height:8mm;background:#d6dce4;font-size:9pt;text-align:center}th:nth-child(1){width:37%}th:nth-child(2){width:9%}th:nth-child(3){width:9%}th:nth-child(4){width:45%}td{height:4.5mm;font-size:8pt;text-align:center;vertical-align:middle;padding:.25mm .6mm}.service{font-weight:700;word-break:break-word}.block,.house{font-weight:600}.notes{text-align:left}footer{position:absolute;bottom:6mm;display:grid;grid-template-columns:1fr 1fr;gap:8mm 30mm;width:calc(100% - 12mm);font-size:8pt}footer div{border-top:.5pt solid #000;padding-top:.6mm;text-align:center}
           </style></head><body>""" + "".join(_page_html(rows, proposal, number, len(pages), logo) for number, rows in enumerate(pages,1)) + "</body></html>"
         source = directory / "proposta.html"; pdf = directory / "proposta.pdf"; profile = directory / "chrome-profile"; source.write_text(document,encoding="utf-8")
-        result = subprocess.run(["google-chrome","--headless=new","--no-sandbox",f"--user-data-dir={profile}",f"--print-to-pdf={pdf}",source.as_uri()], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=45)
-        if result.returncode != 0 or not pdf.exists():
-            raise RuntimeError("Não foi possível converter a proposta para PDF")
-        return pdf.read_bytes()
+        try:
+            result = subprocess.run(["google-chrome","--headless=new","--no-sandbox",f"--user-data-dir={profile}",f"--print-to-pdf={pdf}",source.as_uri()], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=45)
+            if result.returncode == 0 and pdf.exists():
+                return pdf.read_bytes()
+        except (FileNotFoundError, subprocess.TimeoutExpired):
+            pass
+        # Vercel Functions não incluem Chrome. Mantém a exportação disponível
+        # com o gerador PDF puro usado pelos demais relatórios.
+        from reports import _simple_pdf_bytes
+        rows = _lines(proposal)
+        report = {
+            "type": "proposta_medicao",
+            "title": "Proposta de medição",
+            "filters": {"start": None, "end": proposal["data_proposta"], "pms": proposal.get("pms_numero")},
+            "company": {"nome": proposal["empresa"]},
+            "obra": {"nome": proposal["obra"]},
+            "columns": [("SERVIÇO", "servico"), ("BLOCO", "bloco"), ("CASA", "casa")],
+            "rows": rows,
+            "totals": {"linhas": len(rows), "pagar": 0, "receber": 0},
+        }
+        return _simple_pdf_bytes(report)

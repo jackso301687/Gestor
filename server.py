@@ -16,7 +16,7 @@ from http.cookies import SimpleCookie
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, urlencode, urlparse
 
 from database import (
     ROOT, PROFILES, adjust_payment_item, audit, authenticate, change_password, deactivate_entry,
@@ -37,7 +37,7 @@ from proposta_export import pdf_bytes as proposta_pdf_bytes, xlsx_bytes as propo
 
 HOST = os.environ.get("PMS_HOST", "127.0.0.1")
 PORT = int(os.environ.get("PMS_PORT", "8080"))
-SECURE_COOKIE = os.environ.get("PMS_SECURE_COOKIE", "0") == "1"
+SECURE_COOKIE = os.environ.get("PMS_SECURE_COOKIE", "0") == "1" or bool(os.environ.get("VERCEL"))
 def validate_period(start, end):
     """Valida filtros globais sem alterar as datas dos registros."""
     try:
@@ -55,6 +55,14 @@ class PMSHandler(BaseHTTPRequestHandler):
 
     def log_message(self, fmt, *args):
         print(f"[{self.log_date_time_string()}] {fmt % args}")
+
+    def parsed_url(self):
+        parsed = urlparse(self.path)
+        query = parse_qs(parsed.query)
+        rewritten = query.pop("__path", [None])[0]
+        if rewritten is not None:
+            parsed = parsed._replace(path="/api/" + rewritten.lstrip("/"), query=urlencode(query, doseq=True))
+        return parsed
 
     def send_json(self, data, status=200, headers=None):
         body = json.dumps(data, ensure_ascii=False, default=str).encode("utf-8")
@@ -89,7 +97,7 @@ class PMSHandler(BaseHTTPRequestHandler):
         if not user:
             self.send_json({"error": "Sessão expirada ou acesso não autenticado"}, 401)
             return None
-        if user["deve_trocar_senha"] and self.path not in ("/api/auth/me", "/api/auth/change-password", "/api/auth/logout"):
+        if user["deve_trocar_senha"] and self.parsed_url().path not in ("/api/auth/me", "/api/auth/change-password", "/api/auth/logout"):
             self.send_json({"error": "Troque a senha temporária antes de continuar", "code": "PASSWORD_CHANGE_REQUIRED"}, 403)
             return None
         if role and user["role"] != role:
@@ -119,7 +127,7 @@ class PMSHandler(BaseHTTPRequestHandler):
         return payload
 
     def do_GET(self):
-        parsed = urlparse(self.path)
+        parsed = self.parsed_url()
         if parsed.path.startswith("/api/"):
             return self.api_get(parsed.path, parse_qs(parsed.query))
         if parsed.path == "/campo":
@@ -597,7 +605,7 @@ class PMSHandler(BaseHTTPRequestHandler):
         return self.send_json({"error": "Rota não encontrada"}, 404)
 
     def do_POST(self):
-        parsed = urlparse(self.path)
+        parsed = self.parsed_url()
         try:
             if parsed.path == "/api/apontamento/catalog-preview":
                 size = int(self.headers.get("Content-Length", 0))
@@ -903,7 +911,7 @@ class PMSHandler(BaseHTTPRequestHandler):
         return self.send_json({"error": "Rota não encontrada"}, 404)
 
     def do_PUT(self):
-        parsed = urlparse(self.path)
+        parsed = self.parsed_url()
         try:
             payload = self.read_json()
             with connect() as db:
@@ -1118,7 +1126,7 @@ class PMSHandler(BaseHTTPRequestHandler):
         return self.send_json({"error":"Rota não encontrada"},404)
 
     def do_DELETE(self):
-        parsed = urlparse(self.path)
+        parsed = self.parsed_url()
         try:
             payload = self.read_json() if int(self.headers.get("Content-Length", 0)) else {}
             with connect() as db:

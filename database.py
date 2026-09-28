@@ -19,6 +19,7 @@ from name_normalization import normalize_current_names
 
 ROOT = Path(__file__).resolve().parent
 DB_PATH = Path(os.environ.get("PMS_DB", ROOT / "pms.sqlite3"))
+DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
 SOURCE_SQL = ROOT / "schema_e_dados_obra.sql"
 PASSWORD_ITERATIONS = 310_000
 SESSION_HOURS = 8
@@ -36,7 +37,14 @@ PERMISSIONS = {
 }
 
 
-def connect() -> sqlite3.Connection:
+def using_postgres() -> bool:
+    return bool(DATABASE_URL)
+
+
+def connect():
+    if using_postgres():
+        from postgres_compat import connect as postgres_connect
+        return postgres_connect(DATABASE_URL)
     connection = sqlite3.connect(DB_PATH)
     connection.row_factory = sqlite3.Row
     connection.execute("PRAGMA foreign_keys = ON")
@@ -159,6 +167,12 @@ def import_source_data(connection: sqlite3.Connection) -> dict:
 
 
 def init_db(force: bool = False) -> dict:
+    if using_postgres():
+        with connect() as connection:
+            row = connection.execute("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public' AND table_name='obras'").fetchone()
+            if not row or not row[0]:
+                raise RuntimeError("O PostgreSQL ainda não foi inicializado. Execute scripts/migrate_sqlite_to_postgres.py.")
+        return {"database": "postgresql", "imported": {}}
     if force and DB_PATH.exists():
         DB_PATH.unlink()
     with connect() as connection:

@@ -597,6 +597,8 @@ def update_account(connection, payload, user, ip=None):
 
 
 def backup_database_bytes(connection):
+    if database_module.using_postgres():
+        raise ValueError("No PostgreSQL, use os backups automáticos do provedor do banco")
     target = sqlite3.connect(":memory:")
     try:
         connection.backup(target)
@@ -606,6 +608,8 @@ def backup_database_bytes(connection):
 
 
 def restore_database(connection, raw, confirmation, user_id, ip=None):
+    if database_module.using_postgres():
+        raise ValueError("A restauração de arquivo SQLite não está disponível no PostgreSQL")
     if confirmation != "RESTAURAR":
         raise ValueError("Digite RESTAURAR para confirmar a substituição do banco")
     if not isinstance(raw, bytes) or not raw or len(raw) > 128 * 1024 * 1024:

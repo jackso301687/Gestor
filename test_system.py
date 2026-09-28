@@ -30,8 +30,16 @@ class BusinessRulesTest(unittest.TestCase):
         with database.connect() as db:
             self.assertEqual(db.execute("SELECT COUNT(*) FROM obras").fetchone()[0], 4)
             self.assertEqual(db.execute("SELECT COUNT(*) FROM lancamentos").fetchone()[0], 6504)
-            self.assertEqual(db.execute("SELECT COUNT(*) FROM funcionarios").fetchone()[0], 49)
-            self.assertEqual(db.execute("SELECT COUNT(*) FROM servicos").fetchone()[0], 129)
+            employees = dict(db.execute(
+                "SELECT o.nome,COUNT(f.id) total FROM obras o LEFT JOIN funcionarios f ON f.obra_id=o.id GROUP BY o.id"
+            ))
+            services = dict(db.execute(
+                "SELECT o.nome,COUNT(s.id) total FROM obras o LEFT JOIN servicos s ON s.obra_id=o.id GROUP BY o.id"
+            ))
+            self.assertEqual(employees["ATLANTA"], 49)
+            self.assertEqual(employees["ATLANTA 2"], 43)
+            self.assertEqual(services["ATLANTA"], 129)
+            self.assertEqual(services["ATLANTA 2"], 129)
 
     def test_fresh_database_uses_backup_reference_when_primary_is_destination(self):
         with patch.object(database, "REFERENCE_DB", self.db_path):
@@ -553,8 +561,11 @@ class BusinessRulesTest(unittest.TestCase):
             overrides={row.get("PartName") for row in content_types.findall("ct:Override",ns)}
             definitions=workbook.find("m:definedNames",ns)
             print_areas=definitions.findall("m:definedName[@name='_xlnm.Print_Area']",ns)
-            shared=ET.fromstring(archive.read("xl/sharedStrings.xml"))
-            shared_strings=["".join(row.itertext()) for row in shared.findall("m:si",ns)]
+            try:
+                shared=ET.fromstring(archive.read("xl/sharedStrings.xml"))
+                shared_strings=["".join(row.itertext()) for row in shared.findall("m:si",ns)]
+            except KeyError:
+                shared_strings=[]
             expected_grid_last=proposta_export.GRID_FIRST_ROW+expected_pages*proposta_export.GRID_CAPACITY-1
             expected_signature_1,expected_signature_2=expected_grid_last+4,expected_grid_last+8
             self.assertEqual(len(print_areas),1)
@@ -636,6 +647,13 @@ class BusinessRulesTest(unittest.TestCase):
         self.assertEqual(first.count("<tr>"),proposta_export.GRID_CAPACITY+1)
         self.assertNotIn("Ass.: Responsável pela Empresa",first)
         self.assertIn("Ass.: Responsável pela Empresa",last)
+
+    def test_proposal_pdf_has_serverless_fallback_without_chrome(self):
+        proposal={"empresa":"Empresa teste","obra":"Obra teste","data_proposta":"2026-09-27",
+                  "servicos":[{"nome_servico":"Serviço A","itens":[{"bloco":"A","casa":"1"}]}]}
+        with patch.object(proposta_export.subprocess, "run", side_effect=FileNotFoundError):
+            content=proposta_export.pdf_bytes(proposal)
+        self.assertTrue(content.startswith(b"%PDF-"))
 
     def test_every_rendered_action_has_a_click_binding(self):
         source = (Path(__file__).parent / "app-system.js").read_text(encoding="utf-8")

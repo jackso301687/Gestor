@@ -1,0 +1,3 @@
+# Dependência usada pela migração para PostgreSQL. A Vercel instala este arquivo
+# durante o build da função Python.
+psycopg[binary]>=3.2,<4

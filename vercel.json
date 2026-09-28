@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/api?__path=:path*"
+    }
+  ],
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "{postgres_compat.py,Proposta de medição/**,campo/**,schema.sql,migrations/**}"
+    }
+  }
+}

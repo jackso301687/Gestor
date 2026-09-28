@@ -33,12 +33,13 @@ STYLES = '''<?xml version="1.0" encoding="UTF-8"?>
 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="1"><font><sz val="10"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="1"><xf xfId="0"/></cellXfs></styleSheet>'''
 
 
-def cell(column, row):
-    return f'<c r="{column}{row}" t="inlineStr"><is><t></t></is></c>'
+def cell(column, row, value=""):
+    return f'<c r="{column}{row}" t="inlineStr"><is><t>{value}</t></is></c>'
 
 
 def row(number):
-    return f'<row r="{number}">' + ''.join(cell(column, number) for column in "ABCDEFGHIJKLMN") + '</row>'
+    headings = {"A": "SERVIÇOS", "B": "BLOCO", "C": "CASA", "D": "OBSERVAÇÕES"} if number == 4 else {}
+    return f'<row r="{number}">' + ''.join(cell(column, number, headings.get(column, "")) for column in "ABCDEFGHIJKLMN") + '</row>'
 
 
 def sheet():
